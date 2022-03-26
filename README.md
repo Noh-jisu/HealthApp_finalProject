@@ -69,7 +69,6 @@ String형식으로 Oracle DB에 저장후 게시글 상세정보를 가져올때
 
 
 ```
-<form id="frm" action="sellbbswriteAf.do?bid=3" method="get">
 
 val b by lazy { ActivityWorkBbsWriteBinding.inflate(layoutInflater) }
 
