@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="health.back.a.dao.CalendarDao">
+  	
+<insert id="writeCalendar" parameterType="health.back.a.dto.CalendarDto">
+	INSERT INTO CALENDAR(CALENDARSEQ,TITLE,CONTENT,WDATE,DEL,ID,CALENDARDATE)
+	VALUES(CALENDARSEQ_CALENDAR.NEXTVAL,#{title},#{content},SYSDATE,0,#{id},#{calendardate})
+</insert>	
+
+<update id="updateCalendar" parameterType="health.back.a.dto.CalendarDto">
+	UPDATE CALENDAR
+	SET CONTENT=#{content}
+	WHERE CALENDARDATE=#{calendardate} AND ID=#{id}
+</update>
+
+<!-- 딜리트 사용하기 -->	
+<delete id="deleteCalendar" parameterType="health.back.a.dto.CalendarDto">
+	DELETE 
+	FROM CALENDAR
+	WHERE CALENDARDATE=#{calendardate} AND ID=#{id}
+</delete>
+
+<!-- 검색하기 -->
+<select id="searchCalendar" parameterType="health.back.a.dto.CalendarDto" resultType="health.back.a.dto.CalendarDto">
+<!-- resultType은 원하는값의형태 parameterType은 원하는값의 형태 -->
+	SELECT *
+	FROM CALENDAR
+	WHERE CALENDARDATE=#{calendardate} AND ID=#{id}
+
+</select>
+
+  </mapper>
