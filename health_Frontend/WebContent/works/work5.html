@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<style>
+body{ background-color:#f5f5f5; }
+h3{ margin-left:30px; }
+.card{ margin-top:50px; }
+.back{position: absolute;}
+</style>
+</head>
+<body>
+<header class="blog-header py-3 d-flex">
+<h3 class="flex-grow-1">운동 목록</h3>
+<div>
+	<span id="userNickname"></span>
+	<button type="button" class="btn btn-sm btn-secondary" id="logout">로그아웃</button>
+</div>
+  </header>
+  
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Tenth navbar example">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample08">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="../main.html">홈</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="../workList.html">운동목록</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../calendar.html">운동일정</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../bbsList.html">자유게시판</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../mypage.html">마이페이지</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="../images/딥스쿼트.gif" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">맨몸 스쿼트</h5>
+        <br>
+        <p class="card-text">스쿼트(squat)는 직립한 상태에서 무릎 관절을 굽혔다 펴는 행동을 반복함으로써, 
+        하반신의 대퇴사두근과 함 스트링, 대둔근, 중 전근 등의 근육을 성장시켜<br> 근육량 증가시켜 주는과 효과가 좋은 운동법입니다.
+        <br><br>
+스쿼트는
+대퇴사두근, 대둔근, 슬굴곡근이 단련되면서 허벅지와 엉덩이, 종아리를 포함한 하체 근육을 강화시켜주는 효과가 있습니다. 
+초보자도 운동 효과를 빠르게 얻을 수 있으며, 매일 스쿼트를 꾸준히 반복할 경우 호르몬 분비가 왕성해지면서 근육량 향상에도 도움이 됩니다.
+척추 주변 근육이 약하면 중력에 따라 허리가 굽으면서 통증이 발생할 수 있습니다. 
+스쿼트로 허리 근육을 단련시키면 허리와 목에 안정성이 생기며, 가슴의 반대쪽에 있으면서 등을 펴주는 역할을 하는 하부 승모근을 발달시켜 
+거북목을 예방하는 등 자세 교정 효과도 있습니다.
+<br><br>
+주의할점은
+처음부터 많은 양을 하려고 욕심내지 않습니다. 매일 꾸준히 1주 차에는 4회씩 1세트, 2주 차에는 10회씩 3세트 순으로 점차 늘려가는 것이 좋습니다.<br>
+맨몸 스쿼트가 쉽다면 짐볼을 활용하거나, 케틀벨처럼 무게가 있는 중량 기구를 사용하면 운동효과를 더욱 높일 수 있습니다.
+어떤 운동을 하던 자신에게 맞는 강도로 해야 합니다. 관절에 문제가 있는 사람은 스쿼트를 피하고, 운동 중 통증이 발생하면 즉시 멈추세요.
+
+        </p>
+        <div id="heart" style="width: 55px;">
+	      	<div>
+	      		<div class="back" id="emty"><img src="../images/emtyheart.png" width="50px"></div>
+	      	</div>
+	      	<div>
+	      		<div id="fill"><img src="../images/fillheart.png" width="50px"></div>
+	      	</div>
+	     </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  <div class="col">
+    <div class="card h-100">
+    <div class="card-header">
+        <small class="text-muted">구분동작 1</small>
+      </div>
+      <img src="../images/딥스쿼트1.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <p class="card-text">두 팔을 뻗어 코어 밸런스를 맞춘 후 다리를 어깨 너비로 벌려줍니다. </p>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card h-100">
+    <div class="card-header">
+        <small class="text-muted">구분동작 2</small>
+      </div>
+      <img src="../images/딥스쿼트3.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <p class="card-text">하체 근육의 저항을 느끼며 그대로 앉아줍니다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card h-100">
+    <div class="card-header">
+        <small class="text-muted">구분동작 3</small>
+      </div>
+      <img src="../images/딥스쿼트2.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <p class="card-text">다시 역순으로 일어서며 동작을 반복합니다.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</body>
+<script>
+$(document).ready(function(){
+let str = sessionStorage.getItem("login"); // 세션저장소에서 값 빼옴
+let json = JSON.parse(str); // 문자열을 JSON으로 파싱
+let lstr = localStorage.getItem("login"); // 자동로그인했다면
+let ljson = JSON.parse(lstr);
+
+//좋아요 이미지
+$.ajax({
+	url:"http://localhost:3000/likeCountWork",
+	type:"post",
+	data:{work_no:45, user_id:json.id},
+	success:function(msg){
+		//alert(msg)
+		if(msg == "notCount"){
+			$("#emty").hide()
+			$("#fill").show()
+		}else{
+			$("#emty").show()
+			$("#fill").hide()
+		}
+	},error:function(){
+		alert("error")
+	}
+});
+
+// 좋아요 클릭
+$("#heart").click(function(){
+	$.ajax({
+		url:"http://localhost:3000/likeCountWork",
+		type:"post",
+		data:{work_no:45, user_id:json.id},
+		success:function(msg){
+			if(msg == "notCount"){
+				$("#emty").show()
+				$("#fill").hide()
+				
+				$.ajax({
+					url:"http://localhost:3000/likeCountCancelWork",
+					type:"post",
+					data:{work_no:45, user_id:json.id},
+					success:function(msg){
+						//alert(msg)
+					},error:function(){
+						alert("error")
+					}
+				});
+			}else{
+				$("#emty").hide()
+				$("#fill").show()
+			}
+		},error:function(){
+			alert("error")
+		}
+	});
+});
+
+if(json.auth!=1){
+	$("#adminPageBtn").hide();
+}
+
+$("#adminPageBtn").click(()=>{
+	location.href="memberList.html"
+});
+
+if(str != null){
+$("#userNickname").html(json.nickname+"님이 접속중입니다.");
+}else{
+$("#userNickname").html(ljson.nickname+"님이 접속중입니다.");
+}
+$("#logout").click(function(){
+	
+	if(confirm("로그아웃 하시겠습니까?") == true){
+		const userAuth = json.auth;
+		switch(userAuth){
+		case 4:
+			Kakao.init('33dac5c74d9c68aa75bc31a1474ec6cd');
+			
+			if(Kakao.Auth.getAccessToken()){
+				Kakao.API.request({
+					url:'/v1/user/unlink',
+					success:(res)=>{
+						console.log(res)
+					},
+					fail:(err)=>{
+						console.log(err)
+					},
+				})
+				Kakao.Auth.setAccessToken(undefined)
+			}
+		break
+		case 5:
+			let firebaseConfig = {
+			    apiKey: "AIzaSyBf-7zB4MCZOc-48Xsxt2cyOTCRDfI80aw",
+			    authDomain: "healthapp-client.firebaseapp.com",
+			    projectId: "healthapp-client",
+			    storageBucket: "healthapp-client.appspot.com",
+			    messagingSenderId: "1011601613020",
+			    appId: "1:1011601613020:web:2a87e02a1e4b21e2d0d419",
+			    measurementId: "G-T99K3V7HCQ"
+			  };
+
+			// Initialize Firebase
+			firebase.initializeApp(firebaseConfig);
+			firebase.auth().signOut().then(()=>{
+				console.log("구글 로그아웃 성공")
+			}).catch((err)=>{
+				console.log("구글 로그아웃 에러")
+			})
+		}
+			alert("로그아웃되었습니다.")
+			sessionStorage.clear();
+			localStorage.clear();
+			location.href="login.html";
+	}
+});
+});
+</script>
+</html>
