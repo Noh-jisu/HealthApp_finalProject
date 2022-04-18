@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="health.back.a.dao.WorkListDao" >
+	<select id="getWorkList" resultType="health.back.a.dto.WorkListDto">
+		SELECT *
+		FROM WORK
+		ORDER BY PART
+	</select>
+	
+	<select id="getWorkDetail" parameterType="java.lang.Integer" resultType="health.back.a.dto.WorkListDto">
+		SELECT * FROM WORK
+		WHERE WORKSEQ=#{workseq}
+	</select>
+	
+	<!-- 좋아요 -->
+	<update id="likeCountWork" parameterType="java.lang.Integer">
+		UPDATE WORK
+		SET WORKLIKE=WORKLIKE+1
+		WHERE WORKSEQ=#{seq}
+	</update>
+	<insert id="likeInfoWork" parameterType="health.back.a.dto.LikeWorkDto">
+		INSERT INTO LIKEWORK(WORK_NO, USER_ID)
+		VALUES(#{work_no}, #{user_id})
+	</insert>
+	
+	<!-- 좋아요 취소 -->
+	<update id="likeCountCancelWork" parameterType="java.lang.Integer">
+		UPDATE WORK
+		SET WORKLIKE=WORKLIKE-1
+		WHERE WORKSEQ=#{seq}
+	</update>
+	<delete id="likeCancelWork" parameterType="health.back.a.dto.LikeWorkDto">
+		DELETE FROM LIKEWORK
+		WHERE WORK_NO = #{work_no} AND USER_ID = #{user_id}
+	</delete>
+	
+	<!-- 좋아요 중복 제한 -->
+	<select id="checkLikeCountWork" parameterType="health.back.a.dto.LikeWorkDto" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM LIKEWORK
+		WHERE WORK_NO=#{work_no} AND USER_ID=#{user_id}
+	</select>
+</mapper>

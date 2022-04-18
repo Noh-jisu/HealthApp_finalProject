@@ -14,12 +14,16 @@ import health.back.a.dto.ReadCountBbsDto;
 import health.back.a.dto.WorkBbsDto;
 import health.back.a.dto.WorkBbsParam;
 import health.back.a.service.WorkBbsService;
+import health.back.a.service.WorkReplyService;
 
 @RestController
 public class WorkBbsController {
 	
 	@Autowired
 	WorkBbsService sv;
+	
+	@Autowired
+	WorkReplyService rsv;
 	
 	// 게시판 전체리스트 불러오기
 	@RequestMapping(value = "/getBbsList", method = {RequestMethod.GET, RequestMethod.POST})
@@ -147,62 +151,83 @@ public class WorkBbsController {
 		return bbs;
 	}
 	
-	// 게시글 좋아요 기능
+	// 게시글 좋아요 기능_Web
 	@RequestMapping(value = "/likeCount", method = {RequestMethod.GET, RequestMethod.POST})
-	public void likeCount(int seq) {
-		// 클라이언트에서 받은 seq번호 확인
-		System.out.println("받은 seq번호(게시글 좋아요) : " + seq);
+	public String likeCount(LikeBbsDto dto) {
+		// 클라이언트에서 받은 정보 확인
+		System.out.println("받은 정보(게시글 좋아요) : " + dto);
 		
-		sv.likeCount(seq);
+		boolean b = sv.checkLikeCount(dto);
+		System.out.println("현재 b의 값 : " + b);
+		
+		if(b) { // 해당 게시판 좋아요 기록 있을때
+			System.out.println("좋아요 누른적이 있습니다");
+			return "notCount";
+		}else { // 해당 게시판 좋아요 기록 없을때
+			sv.likeInfo(dto);
+			sv.likeCount(dto.getBbs_no());
+			System.out.println("좋아요를 눌렀습니다");
+			return "count";
+		}
+		
 	}
 	
-	// 게시글 좋아요 기능 웹 테스트
-		@RequestMapping(value = "/likeCount_W", method = {RequestMethod.GET, RequestMethod.POST})
-		public String likeCount_W(LikeBbsDto dto) {
-			// 클라이언트에서 받은 정보 확인
-			System.out.println("받은 정보(게시글 좋아요) : " + dto);
-			
-			boolean b = sv.checkLikeCount(dto);
-			System.out.println("현재 b의 값 : " + b);
-			
-			if(b) { // 해당 게시판 좋아요 기록 있을때
-				System.out.println("좋아요 누른적이 있습니다");
-				return "notCount";
-			}else { // 해당 게시판 좋아요 기록 없을때
-				sv.likeInfo(dto);
-				sv.likeCount(dto.getBbs_no());
-				System.out.println("좋아요를 눌렀습니다");
-				return "count";
-			}
-			
+	// 게시글 좋아요 기능_App
+	@RequestMapping(value = "/likeCount_M", method = {RequestMethod.GET, RequestMethod.POST})
+	public String likeCount_M(@RequestBody LikeBbsDto dto) {
+		// 클라이언트에서 받은 정보 확인
+		System.out.println("받은 정보(게시글 좋아요) : " + dto);
+		
+		boolean b = sv.checkLikeCount(dto);
+		System.out.println("현재 b의 값 : " + b);
+		
+		if(b) { // 해당 게시판 좋아요 기록 있을때
+			System.out.println("좋아요 누른적이 있습니다");
+			return "notCount";
+		}else { // 해당 게시판 좋아요 기록 없을때
+			sv.likeInfo(dto);
+			sv.likeCount(dto.getBbs_no());
+			System.out.println("좋아요를 눌렀습니다");
+			return "count";
 		}
+		
+	}
 	
-	// 게시글 좋아요 취소기능
+	// 게시글 좋아요 취소기능_Web
 	@RequestMapping(value = "/likeCountCancel", method = {RequestMethod.GET, RequestMethod.POST})
-	public void likeCountCancel(int seq) {
-		// 클라이언트에서 받은 seq번호 확인
-		System.out.println("받은 seq번호(좋아요 취소) : " + seq);
+	public String likeCountCancel(LikeBbsDto dto) {
+		// 클라이언트에서 받은 정보 확인
+		System.out.println("받은정보 (좋아요 취소) : " + dto);
 		
-		sv.likeCountCancel(seq);
+		// 좋아요테이블 게시판 및 유저정보 삭제
+		boolean b = sv.likeCancel(dto);
+		
+		if(b) {
+			// 게시판 좋아요 1감소
+			sv.likeCountCancel(dto.getBbs_no());
+			return "complete";
+		}else {
+			return "fail";
+		}
 	}
 	
-	// 게시글 좋아요 취소기능 웹 테스트
-		@RequestMapping(value = "/likeCountCancel_W", method = {RequestMethod.GET, RequestMethod.POST})
-		public String likeCountCancel_W(LikeBbsDto dto) {
-			// 클라이언트에서 받은 정보 확인
-			System.out.println("받은정보 (좋아요 취소) : " + dto);
-			
-			// 좋아요테이블 게시판 및 유저정보 삭제
-			boolean b = sv.likeCancel(dto);
-			
-			if(b) {
-				// 게시판 좋아요 1감소
-				sv.likeCountCancel(dto.getBbs_no());
-				return "complete";
-			}else {
-				return "fail";
-			}
+	// 게시글 좋아요 취소기능_App
+	@RequestMapping(value = "/likeCountCancel_M", method = {RequestMethod.GET, RequestMethod.POST})
+	public String likeCountCancel_M(@RequestBody LikeBbsDto dto) {
+		// 클라이언트에서 받은 정보 확인
+		System.out.println("받은정보 (좋아요 취소) : " + dto);
+		
+		// 좋아요테이블 게시판 및 유저정보 삭제
+		boolean b = sv.likeCancel(dto);
+		
+		if(b) {
+			// 게시판 좋아요 1감소
+			sv.likeCountCancel(dto.getBbs_no());
+			return "complete";
+		}else {
+			return "fail";
 		}
+	}
 	
 	// 게시판 글 수정_Web
 	@RequestMapping(value = "/updateBbs", method = {RequestMethod.GET, RequestMethod.POST})
@@ -211,12 +236,15 @@ public class WorkBbsController {
 		System.out.println("수정된 게시글 정보 : " + dto);
 		
 		boolean b = sv.updateBbs(dto);
+		System.out.println("b의 값 : " + b);
 		if(b) {
 			// 수정 완료
 			return "success";
+		}else {
+			// 수정 실패
+			return "fail";
 		}
-		// 수정 실패
-		return "fail";
+		
 	}
 	
 	// 게시판 글 수정_App
@@ -226,12 +254,14 @@ public class WorkBbsController {
 		System.out.println("수정된 게시글 정보 : " + dto);
 		
 		boolean b = sv.updateBbs(dto);
+		
 		if(b) {
 			// 수정 완료
 			return "success";
+		}else {
+			// 수정 실패
+			return "fail";
 		}
-		// 수정 실패
-		return "fail";
 	}
 	
 	// 게시판 글 삭제
@@ -242,6 +272,7 @@ public class WorkBbsController {
 		
 		boolean b = sv.deleteBbs(seq);
 		if(b) {
+			rsv.deleteReply(seq);
 			// 삭제 성공
 			return "success";
 		}
