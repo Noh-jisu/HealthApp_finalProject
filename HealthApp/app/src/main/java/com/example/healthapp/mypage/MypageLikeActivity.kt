@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.healthapp.R
 import com.example.healthapp.bbs.BbsDto
+import com.example.healthapp.login.LoginMemberDao
 
-// 회원테이블에 좋아요 누른 글 목록 생성
 class MypageLikeActivity : AppCompatActivity() {
     var test = arrayListOf<BbsDto>(
         BbsDto(0, "ccc", "c닉", "제목이다이다이다이다이다", "내용이다다다다",
@@ -18,11 +18,19 @@ class MypageLikeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mypage_like)
+        setContentView(R.layout.mypage_like)
+
+        getSupportActionBar()!!.setIcon(R.drawable.appbar)
+        getSupportActionBar()!!.setDisplayUseLogoEnabled(true)
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
+        getSupportActionBar()!!.setElevation(0F)
+
+        val id = LoginMemberDao.user?.id
+        println("확인!!!!!!!!!! $id")
+        val data = MypageDao.getInstance().getMyLike(id!!)
 
         var recycleV = findViewById<RecyclerView>(R.id.recyLike)
-
-        val adap = AdapterLike(this, test)
+        val adap = AdapterLike(this, data!!)
         recycleV.adapter = adap
 
         val layout = LinearLayoutManager(this)

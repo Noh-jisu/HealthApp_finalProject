@@ -1,8 +1,8 @@
 package com.example.healthapp.mypage
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
+import android.widget.CheckBox
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.healthapp.R
@@ -18,11 +18,16 @@ class MypageWriteActivity : AppCompatActivity() {
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mypage_write)
+        setContentView(R.layout.mypage_write)
+
+        getSupportActionBar()!!.setIcon(R.drawable.appbar)
+        getSupportActionBar()!!.setDisplayUseLogoEnabled(true)
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
+        getSupportActionBar()!!.setElevation(0F)
 
         // 내 게시글 불러오기
         val id = LoginMemberDao.user?.id
-        val data = MypageDao.getInstance().getMyBbs_M(id!!)
+        val data = MypageDao.getInstance().getMyBbs(id!!)
         println("확인!!!!!!!!!! $id !!!!! $data")
 
         var recycleV = findViewById<RecyclerView>(R.id.recyWrite)
@@ -31,17 +36,5 @@ class MypageWriteActivity : AppCompatActivity() {
 
         val layout = LinearLayoutManager(this)
         recycleV.layoutManager = layout
-
-        // 게시글 전체 선택
-        val all = findViewById<Button>(R.id.mywAllBtn)
-        all.setOnClickListener {
-            //
-        }
-
-        // 선택목록 삭제
-        val delete = findViewById<Button>(R.id.mywDeleteBtn)
-        delete.setOnClickListener {
-            //
-        }
     }
 }

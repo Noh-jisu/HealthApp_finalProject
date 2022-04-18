@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.healthapp.R
-import com.example.healthapp.bbs.BbsDto
 import com.example.healthapp.bbs.BbsReplyDto
 import com.example.healthapp.login.LoginMemberDao
 
@@ -18,11 +17,16 @@ class MypageReplyActivity : AppCompatActivity() {
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mypage_reply)
+        setContentView(R.layout.mypage_reply)
+
+        getSupportActionBar()!!.setIcon(R.drawable.appbar)
+        getSupportActionBar()!!.setDisplayUseLogoEnabled(true)
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
+        getSupportActionBar()!!.setElevation(0F)
 
         val id = LoginMemberDao.user?.id
         println("확인!!!!!!!!!! $id")
-        val data = MypageDao.getInstance().getMyReply_M(id!!)
+        val data = MypageDao.getInstance().getMyReply(id!!)
 
         var recycleV = findViewById<RecyclerView>(R.id.recyReply)
         val adap = AdapterReply(this, data!!)

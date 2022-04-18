@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
+    <TextView
+            android:id="@+id/mywTitle"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="제목" android:textSize="15sp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:id="@+id/mywDate"
+            android:layout_width="130dp"
+            android:layout_height="30dp"
+            android:hint="작성날짜" android:textSize="15sp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/mywTitle"/>
+    <TextView
+            android:id="@+id/mywReadcount"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:hint="조회수" android:textSize="15sp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/mywDate"/>
+    <TextView
+            android:id="@+id/mywLike"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:hint="좋아요" android:textSize="15sp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/mywReadcount"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

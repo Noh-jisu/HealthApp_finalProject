@@ -1,32 +1,41 @@
 package com.example.healthapp.bbs
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.example.healthapp.R
 import com.example.healthapp.databinding.ActivityBbsDetailBinding
+import com.example.healthapp.fragment.MainFragment
 import com.example.healthapp.login.LoginMemberDao
+import kotlinx.coroutines.*
 
-// 슬라이드 될 페이지의 글로벌변수(전역변수)
-private var pagesNumber: Int = 0
-var imgArr : List<String> = arrayListOf()
+
+
 
 class BbsDetailActivity : AppCompatActivity() {
 
+    // 슬라이드 될 페이지의 글로벌변수(전역변수)
+    var imgArr : List<String> = arrayListOf()
+
     val b by lazy { ActivityBbsDetailBinding.inflate(layoutInflater) }
-
-//    private lateinit var viewPager: ViewPager2
-//
-//    var replyList : ArrayList<BbsReplyDto>? = null
-
     // 아직 구현하지 못한 기능
     /*
     1. 뷰페이저기능
@@ -37,30 +46,56 @@ class BbsDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(b.root)
+
+        getSupportActionBar()!!.setIcon(R.drawable.appbar)
+        getSupportActionBar()!!.setDisplayUseLogoEnabled(true)
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
+        getSupportActionBar()!!.setElevation(0F)
+
         // 서버에서 가져온 데이터 세팅
-        val data = intent.getParcelableExtra<BbsDto>("WorkBbsData")
-        println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : " + data?.title)
+        val data = BbsDao.getInstance().bbsDetail_M(ReadCountBbsDto(BbsDao.bbsSeq!!, LoginMemberDao.user?.id!!))
+//
 
         // -----------------------------------게시글-----------------------------------
+        // 작성일 split
+        val dateArr = data?.wdate?.split(":")
+
         // 가져온 데이터로 TextView세팅
         b.bbsDetailTitle.text = data?.title                                  // 게시글 제목
-        b.bbsDetailWriter.text = "${data?.nickname}(${data?.id})"            // 게시글 작성자
-        b.bbsDetailWdate.text = data?.wdate                                  // 게시글 작성일
-        b.bbsDetailRcLike.text = "❤${data?.bbsLike} / ${data?.readcount}"   // 게시글 조회수/좋아요
+        b.bbsDetailWriter.text = "${data?.nickname}"            // 게시글 작성자
+        b.bbsDetailWdate.text = "${dateArr!![0]}:${dateArr!![1]}"            // 게시글 작성일
+        b.bbsDetailRcLike.text = "👍 ${data?.bbsLike} / ${data?.readcount}"   // 게시글 조회수/좋아요
         b.bbsDetailContent.text = data?.content
-        if(LoginMemberDao.user?.id == data?.id){
+        if(LoginMemberDao.user?.id == data?.id || LoginMemberDao.user?.auth == 1){
             b.bbsUpdateView.visibility = View.VISIBLE
             b.bbsDeleteView.visibility = View.VISIBLE
         }
+        // 이미지 슬라이드
+        val pagerAdapter = ScreenSlidePagerAdapter(this@BbsDetailActivity)
+        b.viewPager.adapter = pagerAdapter
+
+
+
+
         // 좋아요 터치시 이벤트(좋아요누르기전)
         b.bbsDetailRcLike.setOnClickListener {
             // 코드
-            BbsDao.getInstance().likeCount(BbsDao.bbsSeq!!)
-            reLoadView()    // 화면 새로고침
+            val likeStr = BbsDao.getInstance().likeCount_M(LikeBbsDto(BbsDao.bbsSeq!!, LoginMemberDao.user?.id!!))
+            if(likeStr == "count"){
+
+                Toast.makeText(this,"좋아요를 눌렀습니다!", Toast.LENGTH_SHORT).show()
+                reLoadView()
+            }else{
+                BbsDao.getInstance().likeCountCancel_M(LikeBbsDto(BbsDao.bbsSeq!!, LoginMemberDao.user?.id!!))
+                Toast.makeText(this,"좋아요 취소", Toast.LENGTH_SHORT).show()
+                reLoadView()
+            }
         }
         // 목록으로 클릭시 이벤트
         b.goToBbsList.setOnClickListener {
-            super.onBackPressed()
+            WorkActivity.selectedFragment = 1
+            val intent = Intent(this, WorkActivity::class.java)
+            startActivity(intent)
         }
         // 수정 클릭시 이벤트
         b.bbsUpdateView.setOnClickListener{
@@ -74,13 +109,14 @@ class BbsDetailActivity : AppCompatActivity() {
         }
         // 삭제 클릭시 이벤트
         b.bbsDeleteView.setOnClickListener {
-            AlertDialog.Builder(this).setTitle("게시글 삭제")
+            AlertDialog.Builder(this, R.style.MyDialogTheme).setTitle("게시글 삭제")
                 .setMessage("주의!\n게시글을 삭제하시겠습니까?\n삭제한 게시글은 복구할 수 없습니다.").setCancelable(false)
                 .setPositiveButton("확인"){ _, _ ->   // 확인 누를시 이벤트
                     BbsDao.getInstance().deleteBbs(data?.seq!!)
-                    AlertDialog.Builder(this).setMessage("삭제가 완료되었습니다").setCancelable(false)
+                    AlertDialog.Builder(this, R.style.MyDialogTheme).setMessage("삭제가 완료되었습니다").setCancelable(false)
                         .setPositiveButton("확인"){ _, _ ->   // 확인 누를시 이벤트
-                            val i = Intent(this, WorkActivity::class.java)
+                            WorkActivity.selectedFragment = 1
+                            val i = Intent(this, MainFragment::class.java)
                             startActivity(i)
                         }.show()
                 }.setNegativeButton("취소"){_, _ -> } // 취소 누를시 이벤트 없음
@@ -126,29 +162,21 @@ class BbsDetailActivity : AppCompatActivity() {
         // 키보드 나올때 화면 위로 밀어올리기
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
+        // 가져온 게시글정보에서 img가 존재하면 꺼내와서 배열로 저장
+        if(data?.bbsImage != null){
+            val str = data?.bbsImage
+            imgArr = str?.split(",")
+        }else{
+            b.viewPager.visibility = View.GONE
+        }
 
+    }
 
-
-//
-//        // 가져온 게시글정보에서 img가 존재하면 꺼내와서 배열로 저장
-//        if(data?.bbsImage != null){
-//            val str = data?.bbsImage
-//            imgArr = str?.split(",")
-//            println(imgArr?.get(0))
-//            pagesNumber = imgArr.size
-//        }
-//        // 테스트
-//        b.textView.text = "가져온데이터 : ${data?.title}"
-//        // 테스트
-//        b.getImgBtn.setOnClickListener {
-//            getImages(imgArr?.get(0))
-//        }
-//
-//        viewPager = b.bbsDetailViewPager
-//
-//        val pagerAdapter = ScreenSlidePagerAdapter(this)
-//        viewPager.adapter = pagerAdapter
-
+    override fun onBackPressed() {
+        // 게시글목록으로 이동
+        WorkActivity.selectedFragment = 1
+        val intent = Intent(this, WorkActivity::class.java)
+        startActivity(intent)
     }
 
     fun reLoadView(){
@@ -159,21 +187,17 @@ class BbsDetailActivity : AppCompatActivity() {
         this.startActivity(intent) //현재 액티비티 재실행 실시
         this.overridePendingTransition(0, 0) //효과 없애기
     }
-//    // 파이어베이스 저장공간 위치
-//    val storage = Firebase.storage("gs://healthapp-client.appspot.com")
-//    // DB에서 꺼내온 imgUri(String)을 이용해 이미지 불러오는 함수
-//    fun getImages(path: String){
-//        storage.getReference(path).downloadUrl.addOnSuccessListener { uri ->
-//            Glide.with(this).load(uri).into(b.imgView)
-//        }.addOnFailureListener{
-//            println("스토리지 다운로드 에러 => ${it.message}")
-//        }
-//    }
-//
-//    private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
-//        override fun getItemCount(): Int = pagesNumber
-//
-//        override fun createFragment(position: Int): Fragment = SildeImageFragment()
-//    }
+    private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
 
+        override fun getItemCount(): Int = imgArr.size
+
+        override fun createFragment(position: Int): Fragment {
+            val imgNum = position-1
+            return when(position) {
+                imgNum -> SlideImageFragment(imgArr[imgNum])
+                else -> SlideImageFragment(imgArr[position])
+            }
+        }
+    }
 }
+

@@ -11,7 +11,9 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.healthapp.R
 import com.example.healthapp.databinding.ActivityBbsWriteBinding
+import com.example.healthapp.fragment.MainFragment
 import com.example.healthapp.login.LoginMemberDao
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -25,20 +27,28 @@ class BbsWriteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(b.root)
 
+        getSupportActionBar()!!.setIcon(R.drawable.appbar)
+        getSupportActionBar()!!.setDisplayUseLogoEnabled(true)
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
+        getSupportActionBar()!!.setElevation(0F)
+
+
         // 사진선택 버튼 클릭시 이벤트(다중사진 업로드)
         b.imageUploadBtn.setOnClickListener {
             // 사진 다중선택 알림창 띄우기
-            AlertDialog.Builder(this).setTitle("알림") // 제목
+            AlertDialog.Builder(this, R.style.MyDialogTheme).setTitle("알림") // 제목
             .setMessage("사진을 길게 눌러 여러개를 선택할 수 있습니다.(최대 10개)")   // 메세지
             .setCancelable(false)   // 로그창 밖 터치해도 안꺼짐
             .setPositiveButton("사진선택하기"){ _, _ ->
                 getImgFromGallery()
+                // 사진선택 버튼 비활성화
+                b.imageUploadBtn.visibility = View.INVISIBLE
+                // 사진 다시선택 버튼 활성화
+                b.WorkBbsReSelectImg.visibility = View.VISIBLE
+            }.setNegativeButton("취소") { _, _ ->
             }.show()
-            // 사진선택 버튼 비활성화
-            b.imageUploadBtn.visibility = View.INVISIBLE
-            // 사진 다시선택 버튼 활성화
-            b.WorkBbsReSelectImg.visibility = View.VISIBLE
         }
+
         // 다시선택 버튼 클릭시 이벤트(기존 업로드데이터 삭제 후 다시 다중업로드)
         b.WorkBbsReSelectImg.setOnClickListener {
             // 앞에 업로드 됐던 이미지 삭제
@@ -65,6 +75,7 @@ class BbsWriteActivity : AppCompatActivity() {
             Toast.makeText(this,"작성이 완료되었습니다.", Toast.LENGTH_LONG).show()
 
             // 게시글 목록으로 이동
+            WorkActivity.selectedFragment = 1
             val i = Intent(this, WorkActivity::class.java)
             startActivity(i)
         }
@@ -77,7 +88,7 @@ class BbsWriteActivity : AppCompatActivity() {
 
     // 뒤로가기버튼 터치 이벤트
     override fun onBackPressed() {
-        AlertDialog.Builder(this).setTitle("알림") // 제목
+        AlertDialog.Builder(this, R.style.MyDialogTheme).setTitle("알림") // 제목
             .setMessage("게시글 목록으로 돌아가시겠습니까??\n작성된 글은 저장되지 않습니다")   // 메세지
             .setCancelable(false)   // 로그창 밖 터치해도 안꺼짐
             .setPositiveButton("확인"){ _, _ ->   // 확인 누를시
@@ -85,10 +96,13 @@ class BbsWriteActivity : AppCompatActivity() {
                     deleteImg()
                 }
                 // 게시글 목록으로 이동
-                super.onBackPressed()
+                WorkActivity.selectedFragment = 1
+                val intent = Intent(this, WorkActivity::class.java)
+                startActivity((intent))
             }.setNegativeButton("취소"){_, _ -> } // 취소 누를시 이벤트 없음
             .show()
     }
+
 
     // 첨부할 사진 선택 시작함수(갤러리이동)
     fun getImgFromGallery() {
@@ -198,6 +212,8 @@ class BbsWriteActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
 }
 

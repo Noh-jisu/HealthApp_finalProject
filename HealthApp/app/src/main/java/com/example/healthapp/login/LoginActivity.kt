@@ -3,15 +3,15 @@ package com.example.healthapp.login
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.example.healthapp.R
-import com.example.healthapp.admin.AdminActivity
 import com.example.healthapp.bbs.WorkActivity
+import com.example.healthapp.fragment.MainFragment
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -21,7 +21,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause.*
 import com.kakao.sdk.user.UserApiClient
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlin.system.exitProcess
+import kotlinx.android.synthetic.main.login_activity.*
 
 class LoginActivity : AppCompatActivity() {
 
@@ -35,10 +36,14 @@ class LoginActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.login_activity)
+
+        getSupportActionBar()!!.setIcon(R.drawable.appbar)
+        getSupportActionBar()!!.setDisplayUseLogoEnabled(true)
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
+        getSupportActionBar()!!.setElevation(0F);
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
 
         val loginEditId = findViewById<EditText>(R.id.loginEditId)
         val loginEditPwd = findViewById<EditText>(R.id.loginEditPwd)
@@ -57,8 +62,8 @@ class LoginActivity : AppCompatActivity() {
                 LoginMemberDao.user=dto
 
                 Toast.makeText(this, "${dto.nickname}님 환영합니다", Toast.LENGTH_LONG).show()
-
-                val i = Intent(this, WorkActivity::class.java)
+                WorkActivity.selectedFragment = 0
+                val i = Intent(this, MainFragment::class.java)
                 startActivity(i)
             }else{
                 Toast.makeText(this, "자동로그인 정보 호출에 실패했습니다.", Toast.LENGTH_LONG).show()
@@ -84,20 +89,22 @@ class LoginActivity : AppCompatActivity() {
             }
 
             if (dto != null) {
-                if(dto.auth == 3){
+                if(dto.auth == 3 && dto.del == 0){
                     LoginMemberDao.user = dto
 
                     Toast.makeText(this, "${dto.nickname}님 환영합니다", Toast.LENGTH_LONG).show()
-
-                    val i = Intent(this, WorkActivity::class.java)
+                    WorkActivity.selectedFragment = 0
+                    val i = Intent(this, MainFragment::class.java)
                     startActivity(i)
                 } else if(dto.auth == 1){
                     LoginMemberDao.user = dto
 
                     Toast.makeText(this, "관리자 로그인", Toast.LENGTH_LONG).show()
-
-                    val a = Intent(this, AdminActivity::class.java)
+                    WorkActivity.selectedFragment = 0
+                    val a = Intent(this, MainFragment::class.java)
                     startActivity(a)
+                } else {
+                    Toast.makeText(this, "아이디나 비밀번호를 확인하세요", Toast.LENGTH_LONG).show()
                 }
             } else {
                 Toast.makeText(this, "아이디나 비밀번호를 확인하세요", Toast.LENGTH_LONG).show()
@@ -163,7 +170,8 @@ class LoginActivity : AppCompatActivity() {
                                 val kakaoLogin = LoginMemberDao.getInstance().login_M(LoginMemberDto(kakaoNum,kakaoNum,kakaoName,kakaoName," ",0,email," ",4,"","", 0))
                                 LoginMemberDao.user = kakaoLogin
                                 Toast.makeText(this, "${kakaoName}님 환영합니다.", Toast.LENGTH_SHORT).show()
-                                val i = Intent(this,WorkActivity::class.java)
+                                WorkActivity.selectedFragment = 0
+                                val i = Intent(this, MainFragment::class.java)
                                 startActivity(i)
                             }else{
                                 Toast.makeText(this, "카카오 로그인 에러", Toast.LENGTH_SHORT).show()
@@ -173,7 +181,8 @@ class LoginActivity : AppCompatActivity() {
                             if(kakaoLogin != null){
                                 LoginMemberDao.user = kakaoLogin
                                 Toast.makeText(this, "${kakaoName}님 환영합니다.", Toast.LENGTH_SHORT).show()
-                                val i = Intent(this,WorkActivity::class.java)
+                                WorkActivity.selectedFragment = 0
+                                val i = Intent(this, MainFragment::class.java)
                                 startActivity(i)
                             }else{
                                 Toast.makeText(this, "카카오 로그인 에러", Toast.LENGTH_SHORT).show()
@@ -232,29 +241,6 @@ class LoginActivity : AppCompatActivity() {
                     Log.i("idtoken", it.signInAccount?.id!!) // 토큰
                     Log.i("nickname", it.signInAccount?.givenName!!) //닉네임
 
-                    val checkId = LoginMemberDao.getInstance().getId_M(LoginMemberDto(googleUserIdtoken,"","","","",0,"","",0,"","", 0))
-                    if(checkId != "n"){
-                        val googleRegi = LoginMemberDao.getInstance().register_M(LoginMemberDto(googleUserIdtoken,googleUserIdtoken,googleUserName,googleUserNickname," ",0,googleUserEmail," ",5,"","", 0))
-                        if(googleRegi == "y"){
-                            val googleLogin = LoginMemberDao.getInstance().login_M(LoginMemberDto(googleUserIdtoken,googleUserIdtoken,googleUserName,googleUserNickname," ",0,googleUserEmail," ",5,"","", 0))
-                            LoginMemberDao.user = googleLogin
-                            Toast.makeText(this,"${googleUserNickname}님 환영합니다.",Toast.LENGTH_LONG).show()
-                            val i = Intent(this,WorkActivity::class.java)
-                            startActivity(i)
-                        }else{
-                            Toast.makeText(this,"구글 로그인 에러",Toast.LENGTH_LONG).show()
-                        }
-                    }else{
-                        val googleLogin = LoginMemberDao.getInstance().login_M(LoginMemberDto(googleUserIdtoken,googleUserIdtoken,"","","",0,"","",0,"","", 0))
-                        if(googleLogin != null){
-                            LoginMemberDao.user = googleLogin
-                            Toast.makeText(this,"${googleUserNickname}님 환영합니다.",Toast.LENGTH_LONG).show()
-                            val i = Intent(this,WorkActivity::class.java)
-                            startActivity(i)
-                        }else{
-                            Toast.makeText(this,"구글 로그인 에러",Toast.LENGTH_LONG).show()
-                        }
-                    }
                 }else{
                     Log.e("Value", "error")
                 }
@@ -272,9 +258,38 @@ class LoginActivity : AppCompatActivity() {
 
         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener {
             if(it.isSuccessful) {
-                it.result?.user?.displayName
+                val googleUserName = it.result.user?.displayName
+                val googleUserEmail = it.result.user?.email
+                val googleUserIdtoken = it.result.user?.uid
                 Log.i("@@@@@파이어베이스사용자이름",it.result?.user?.displayName!!)
                 Log.i("@@@@@파이어베이스사용자이메일",it.result?.user?.email!!)
+                Log.i("@@@@@uid",it.result?.user?.uid!!)
+
+                val checkId = LoginMemberDao.getInstance().getId_M(LoginMemberDto(googleUserIdtoken,"","","","",0,"","",0,"","", 0))
+                if(checkId != "n"){
+                    val googleRegi = LoginMemberDao.getInstance().register_M(LoginMemberDto(googleUserIdtoken,googleUserIdtoken,googleUserName,googleUserName," ",0,googleUserEmail," ",5,"","", 0))
+                    if(googleRegi == "y"){
+                        val googleLogin = LoginMemberDao.getInstance().login_M(LoginMemberDto(googleUserIdtoken,googleUserIdtoken,googleUserName,googleUserName," ",0,googleUserEmail," ",5,"","", 0))
+                        LoginMemberDao.user = googleLogin
+                        Toast.makeText(this,"${googleUserName}님 환영합니다.",Toast.LENGTH_LONG).show()
+                        WorkActivity.selectedFragment = 0
+                        val i = Intent(this,WorkActivity::class.java)
+                        startActivity(i)
+                    }else{
+                        Toast.makeText(this,"구글 로그인 에러",Toast.LENGTH_LONG).show()
+                    }
+                }else{
+                    val googleLogin = LoginMemberDao.getInstance().login_M(LoginMemberDto(googleUserIdtoken,googleUserIdtoken,"","","",0,"","",0,"","", 0))
+                    if(googleLogin != null){
+                        LoginMemberDao.user = googleLogin
+                        Toast.makeText(this,"${googleUserName}님 환영합니다.",Toast.LENGTH_LONG).show()
+                        WorkActivity.selectedFragment = 0
+                        val i = Intent(this, WorkActivity::class.java)
+                        startActivity(i)
+                    }else{
+                        Toast.makeText(this,"구글 로그인 에러",Toast.LENGTH_LONG).show()
+                    }
+                }
 
             }else {
 
@@ -282,8 +297,24 @@ class LoginActivity : AppCompatActivity() {
         }.addOnFailureListener {
 
         }
-
-
-
     }
+
+    private var backPressedTime: Long = 0
+
+    override fun onBackPressed() {
+        Log.d("TAG", "뒤로가기")
+
+        if(System.currentTimeMillis() - backPressedTime >= 1500){
+            // 처음 클릭 메시지
+            backPressedTime = System.currentTimeMillis()
+            Toast.makeText(this, "'뒤로' 버튼을 한번 더 누르시면 앱이 종료됩니다.", Toast.LENGTH_SHORT).show()
+        }else{
+            ActivityCompat.finishAffinity(this)
+            System.runFinalization()
+            exitProcess(0)
+        }
+    }
+
 }
+
+

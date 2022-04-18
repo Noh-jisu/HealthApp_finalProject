@@ -12,7 +12,6 @@ import com.example.healthapp.bbs.BbsDao
 import com.example.healthapp.bbs.BbsReplyDto
 import com.example.healthapp.bbs.BbsDetailActivity
 
-// putExtra수정수정수정 BbsDto 넘기기
 class AdapterReply(private val context: Context, private val dataList: ArrayList<BbsReplyDto>)
 : RecyclerView.Adapter<AdapterReply.ItemViewHolder>() {
     class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -22,12 +21,12 @@ class AdapterReply(private val context: Context, private val dataList: ArrayList
 
         fun bind(dto: BbsReplyDto, context: Context){
             rpreply.text = dto.content
-            rpdate.text = dto.wdate
+            rpdate.text = dto.wdate!!.substring(0, 10)
             rplike.text = dto.replyLike.toString()
 
-            val moveData = BbsDao.bbsData
-
             // 게시글 디테일로 이동
+            val moveData = BbsDao.bbsData // 게시판 디테일 데이터
+
             itemView.setOnClickListener {
                 Intent(context, BbsDetailActivity::class.java).apply {
                     BbsDao.bbsSeq = dto.replyNum
@@ -38,7 +37,7 @@ class AdapterReply(private val context: Context, private val dataList: ArrayList
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.mypage_reply_layout, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.mypage_reply_recycle, parent, false)
         return ItemViewHolder(view)
     }
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {

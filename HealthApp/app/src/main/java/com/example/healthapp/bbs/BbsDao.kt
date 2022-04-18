@@ -26,16 +26,20 @@ interface WorkBbsService {
     fun updateBbs(@Body dto: BbsDto) : Call<String>
 
     // 선택한 게시판 정보 불러오기
-    @GET("/bbsDetail")
-    fun bbsDetail(@Query("seq") seq: Int, @Query("id") id: String) : Call<BbsDto>
+    @POST("/bbsDetail_M")
+    fun bbsDetail_M(@Body dto: ReadCountBbsDto) : Call<BbsDto>
 
     // 선택한 게시판 좋아요
-    @GET("/likeCount")
-    fun likeCount(@Query("seq") seq: Int) : Call<Unit>
+    @POST("/likeCount_M")
+    fun likeCount_M(@Body dto: LikeBbsDto) : Call<String>
 
     // 선택한 게시판 좋아요 취소
-    @GET("/likeCountCancel")
-    fun likeCountCancel(@Query("seq") seq: Int) : Call<Unit>
+    @POST("/likeCountCancel_M")
+    fun likeCountCancel_M(@Body dto: LikeBbsDto) : Call<String>
+
+    // 검색한 게시판 불러오기
+    @POST("/getBbsListSearch_M")
+    fun getBbsListSearch_M(@Body dto: BbsParamDto) : Call<List<BbsDto>>
 }
 
 class BbsDao {
@@ -96,35 +100,47 @@ class BbsDao {
     }
 
     // 선택한 게시판 정보 불러오기
-    fun bbsDetail(seq: Int, id: String) : BbsDto{
+
+    fun bbsDetail_M(dto: ReadCountBbsDto) : BbsDto{
         val retrofit = RetrofitClient.getInstance()
 
         val service = retrofit?.create(WorkBbsService::class.java)
-        val call = service?.bbsDetail(seq, id)
+        val call = service?.bbsDetail_M(dto)
         val response = call?.execute()
 
         return response?.body() as BbsDto
     }
 
     // 선택한 게시판 좋아요
-    fun likeCount(seq: Int) : Unit {
+    fun likeCount_M(dto: LikeBbsDto) : String {
         val retrofit = RetrofitClient.getInstance()
 
         val service = retrofit?.create(WorkBbsService::class.java)
-        val call = service?.likeCount(seq)
+        val call = service?.likeCount_M(dto)
         val response = call?.execute()
 
-        return response?.body() as Unit
+        return response?.body() as String
     }
 
     // 선택한 게시판 좋아요 취소
-    fun likeCountCancel(seq: Int) : Unit {
+    fun likeCountCancel_M(dto: LikeBbsDto) : String {
         val retrofit = RetrofitClient.getInstance()
 
         val service = retrofit?.create(WorkBbsService::class.java)
-        val call = service?.likeCountCancel(seq)
+        val call = service?.likeCountCancel_M(dto)
         val response = call?.execute()
 
-        return response?.body() as Unit
+        return response?.body() as String
+    }
+
+    // 검색한 게시판 불러오기
+    fun getBbsListSearch_M(dto: BbsParamDto) : ArrayList<BbsDto>{
+        val retrofit = RetrofitClient.getInstance()
+
+        val service = retrofit?.create(WorkBbsService::class.java)
+        val call = service?.getBbsListSearch_M(dto)
+        val response = call?.execute()
+
+        return response?.body() as ArrayList<BbsDto>
     }
 }

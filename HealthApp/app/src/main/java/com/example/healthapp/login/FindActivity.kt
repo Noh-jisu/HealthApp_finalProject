@@ -9,13 +9,17 @@ import com.example.healthapp.R
 class FindActivity : AppCompatActivity(), View.OnClickListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_find)
+        setContentView(R.layout.login_find)
+
+        getSupportActionBar()!!.setIcon(R.drawable.appbar)
+        getSupportActionBar()!!.setDisplayUseLogoEnabled(true)
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
+        getSupportActionBar()!!.setElevation(0F)
 
         val fm = supportFragmentManager
         val fragmentTransaction = fm.beginTransaction()
         fragmentTransaction.add(R.id.content, FindIdFragment())
         fragmentTransaction.commit()
-
     }
 
     override fun onClick(view: View?) {
