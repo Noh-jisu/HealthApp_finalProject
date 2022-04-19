@@ -16,11 +16,22 @@
 
 ## 1. 담당업무
 - 게시판기능 구현
-- 페이징 기능 구현(Web 전용)
-- firebase를 활용한 이미지 업로드기능 구현
+  1. 게시글 작성
+  2. 게시글 목록
+  3. 게시글 수정 및 삭제
+  4. 댓글 작성 및 확인
+  5. 조회수 및 좋아요 증가(중복확인)
+  6. 게시글 페이징 기능 구현(Web 전용)
+  7. firebase를 활용한 이미지 업로드 기능
+  8. viewpager2를 활용한 이미지 슬라이드 기능(android)
+  9. 함수를 활용하여 이미지 슬라이드 기능 구현(Web)
 - Class Modeling
-<img width="944" alt="KakaoTalk_20220326_143238319" src="https://user-images.githubusercontent.com/61276416/160229948-c498b7f0-c8e0-44b7-be2a-70c4e00a6222.png">
-<img width="944" alt="KakaoTalk_20220326_143249418" src="https://user-images.githubusercontent.com/61276416/160229951-8ddc43cf-5c73-48ff-affc-075c555b6401.png">
+![image](https://user-images.githubusercontent.com/61276416/163956662-aea0f30b-64f0-4048-b9df-60ffda04ab47.png)
+![image](https://user-images.githubusercontent.com/61276416/163956696-ee28c1c2-7077-464a-9473-00689b1e77ef.png)
+![image](https://user-images.githubusercontent.com/61276416/163956734-03bdc1f1-ec08-4b3f-b366-811486806321.png)
+![image](https://user-images.githubusercontent.com/61276416/163956758-8f3be4f2-738e-4be8-9d98-c64291eb0ff7.png)
+
+
 
 
 <br>
@@ -41,20 +52,61 @@
 ```
 <br>
 
-## 3. 구현기능 화면구성
+## 3-1. 구현기능 화면구성(App)
 
 <br>
 
 
-- 게시판 목록
-<img width="428" alt="KakaoTalk_20220326_142755351" src="https://user-images.githubusercontent.com/61276416/160229883-620b64ec-d8db-4e7c-8405-82ac5de8de06.png">
+- 게시판 목록 <br>
+![image](https://user-images.githubusercontent.com/61276416/163952899-a8ad751f-874b-4eb5-ad4e-90da1d4dc056.png)
 
 <br>
 
-- 게시글 작성
-<img width="430" alt="KakaoTalk_20220326_142808192" src="https://user-images.githubusercontent.com/61276416/160230006-52260030-6c2e-4d8b-818e-e892bd23cc2a.png">
+- 게시글 세부내용 <br>
+![image](https://user-images.githubusercontent.com/61276416/163955673-a08f059b-01c7-460d-bb3c-b5e59d59465b.png)
 
 <br>
+1. 현재 파이어베이스 할당량 문제로 스토리지가 잠겨 이미지를 불러오지 못하지만, 결재 후 잠금을 풀면 이미지 불러오기 가능<br>
+2. 댓글 작성 및 확인 가능
+
+<br>
+<br>
+
+- 게시글 작성 <br>
+
+![image](https://user-images.githubusercontent.com/61276416/163957996-148151a7-3ee3-49b9-bd28-c7cb5bf1da5a.png)
+
+<br>
+
+이미지 최대 5개까지 등록 가능
+
+<br>
+
+## 3-2. 구현기능 화면구성(Web)
+
+<br>
+
+- 게시판 목록 <br>
+![image](https://user-images.githubusercontent.com/61276416/163957042-266adb55-20c0-4703-a8c2-883112e47723.png)
+
+<br>
+
+- 게시글 세부내용 <br>
+![image](https://user-images.githubusercontent.com/61276416/163957182-eaded5dc-a63f-4a67-af25-ef9652657ac1.png)
+
+<br>
+
+- 게시글 작성 <br>
+![image](https://user-images.githubusercontent.com/61276416/163957299-4fef9c73-5727-4fd4-8f94-2d87eddd7042.png)
+![image](https://user-images.githubusercontent.com/61276416/163957346-305f6b3f-123c-4901-b8c7-dfa8c19503e9.png)
+
+<br>
+
+이미지 최대 5개 
+
+
+
+
 
 ## 4. 문제점 및 오류해결
 
@@ -257,3 +309,5 @@ val b by lazy { ActivityWorkBbsWriteBinding.inflate(layoutInflater) }
 
 ## 5. 느낀점 및 소감
 - 첫번째 프로젝트때 하지 못했던 이미지업로드 기능을 구현했다.
+- 이번프로젝트를 진행하면서 android의 기본 옵션인 recyclerView에 대한 이해가 확실히 이전보다 높아졌고, nestedscrollview와 linearlayout을 통해서 화면을 구성하는 View를 배치시키는 방법을 배웠다. 
+- 프로젝트가 커질수 록 초기 기획및 설계단계가 정말 중요하다는 사실을 깨닳았다. 중간중간 추가되는 DB테이블이나 칼럼도 많았고, 조회수 및 좋아요 중복체크기능 부분도 중간에 추가되었다. 경험의 차이일 순 있지만, 다음 프로젝트때는 초반 설계를 좀더 구체적이고 확실하게 계획하여, 중간 변동사항이나 문제점이 발생하지 않도록 주의해야겠다.
