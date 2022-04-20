@@ -307,6 +307,34 @@ val b by lazy { ActivityWorkBbsWriteBinding.inflate(layoutInflater) }
 
 <br>
 
+### 2. Activity 에서 Activity를 이동할때 원하는 프래그먼트를 띄운상태로 이동이 안되는 문제
+![image](https://user-images.githubusercontent.com/61276416/163952899-a8ad751f-874b-4eb5-ad4e-90da1d4dc056.png)
+
+<br>
+- 문제점 : 해당 사진은 게시글 목록 사진이다. 하단 네비게이션바의 두번째에 위치해 있는 fragment인데 게시글 세부내용이나 글 작성후에 startActivity를 통해 4개의 프래그먼트를 띄우고있는 Activity로 이동 시, 첫번째 화면인 운동목록을 띄워주는 문제점이 생겼다.
+- 해결방법 : companion object의 int형 변수를 지정하고, 각 프래그먼트가 해당하는 고유의 int값을 만들어 해당 값이 일치할 경우에는 기본으로 띄워줄 fragment화면을 if문을 통해 지정해줄 수 있다. 
+
+<br>
+
+```
+val fragmentTransaction = fm.beginTransaction()
+
+    if(selectedFragment == 0){
+        fragmentTransaction.add(R.id.frView, WorklistFragment(this, applicationContext))
+    }else if(selectedFragment == 1){
+        fragmentTransaction.add(R.id.frView, BbsFragment(this))
+    }else if(selectedFragment == 2){
+        fragmentTransaction.add(R.id.frView, CalendarFragment(this))
+    }else if(selectedFragment == 3){
+        fragmentTransaction.add(R.id.frView, MypageFragment(this))
+    }else{
+        fragmentTransaction.add(R.id.frView, WorklistFragment(this, applicationContext))
+    }
+    fragmentTransaction.commit()
+```
+
+<br>
+
 ## 5. 느낀점 및 소감
 - 첫번째 프로젝트때 하지 못했던 이미지업로드 기능을 구현했다.
 - 이번프로젝트를 진행하면서 android의 기본 옵션인 recyclerView에 대한 이해가 확실히 이전보다 높아졌고, nestedscrollview와 linearlayout을 통해서 화면을 구성하는 View를 배치시키는 방법을 배웠다. 
