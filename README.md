@@ -124,7 +124,7 @@
  - 해결방법 : 업로드버튼을 하나만 만들고 이미지를 다중으로 선택할 수 있게한다. 선택된 이미지의 uri를 배열에 저장하고 해당 배열을 <br>
 String형식으로 Oracle DB에 저장후 게시글 상세정보를 가져올때 다시 배열형식으로 만들어 for문을 통해 uri주소로 이미지를 노출시킨다.
 
-<img width="430" alt="업로드버튼1개강조" src="https://user-images.githubusercontent.com/61276416/160230272-31cab6bf-4726-49f3-b732-000586d84f9f.png">
+![image](https://user-images.githubusercontent.com/61276416/163957996-148151a7-3ee3-49b9-bd28-c7cb5bf1da5a.png)
 
 
 ```
